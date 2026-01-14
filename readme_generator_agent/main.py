@@ -24,12 +24,11 @@ from typing import Any
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.models.openrouter import OpenRouter
-from agno.tools.mem0 import Mem0Tools
 from agno.tools.github import GithubTools
 from agno.tools.local_file_system import LocalFileSystemTools
+from agno.tools.mem0 import Mem0Tools
 from bindu.penguin.bindufy import bindufy
 from dotenv import load_dotenv
-
 
 # Load environment variables from .env file
 load_dotenv()
@@ -77,7 +76,11 @@ def load_config() -> dict:
         "environment_variables": [
             {"key": "OPENAI_API_KEY", "description": "OpenAI API key for LLM calls", "required": False},
             {"key": "OPENROUTER_API_KEY", "description": "OpenRouter API key for LLM calls", "required": False},
-            {"key": "GITHUB_ACCESS_TOKEN", "description": "GitHub personal access token for repository access", "required": False},
+            {
+                "key": "GITHUB_ACCESS_TOKEN",
+                "description": "GitHub personal access token for repository access",
+                "required": False,
+            },
             {"key": "MEM0_API_KEY", "description": "Mem0 API key for memory operations", "required": False},
         ],
     }
@@ -116,7 +119,7 @@ async def initialize_agent() -> None:
 
     # Initialize tools
     tools = []
-    
+
     # Add GitHub tools if access token is available
     if github_access_token:
         github_tools = GithubTools(access_token=github_access_token)
@@ -124,13 +127,13 @@ async def initialize_agent() -> None:
         print("✅ Added GitHub repository tools")
     else:
         print("⚠️  GITHUB_ACCESS_TOKEN not set - GitHub repository access disabled")
-        print("ℹ️  Get a token from: https://github.com/settings/tokens")
-    
+        print("i  Get a token from: https://github.com/settings/tokens")
+
     # Add local file system tools (always available)
     filesystem_tools = LocalFileSystemTools()
     tools.append(filesystem_tools)
     print("✅ Added local file system tools")
-    
+
     # Add Mem0 if available
     if mem0_api_key:
         mem0_tools = Mem0Tools(api_key=mem0_api_key)
@@ -145,7 +148,7 @@ async def initialize_agent() -> None:
         model=model,
         tools=tools,
         description=dedent("""\
-            You are an intelligent automation tool that creates comprehensive, 
+            You are an intelligent automation tool that creates comprehensive,
             professional README files for open source projects. Your expertise encompasses: 📄
 
             - GitHub repository analysis and documentation extraction
@@ -158,13 +161,13 @@ async def initialize_agent() -> None:
         """),
         instructions=dedent("""\
             **README GENERATION PROTOCOL:**
-            
-            1. **Repository Analysis**: 
+
+            1. **Repository Analysis**:
                - Extract owner/repo_name from provided URL or repository name
                - Use `get_repository` tool with format: owner/repo_name
                - Call `get_repository_languages` to analyze technology stack
                - Gather repository metadata, description, and structure
-            
+
             2. **Content Generation**:
                - Create comprehensive README with professional structure
                - Include project title and clear description
@@ -173,55 +176,55 @@ async def initialize_agent() -> None:
                - Provide usage examples and API documentation
                - Include contribution guidelines
                - Add license information
-            
+
             3. **Formatting Standards**:
                - Use proper Markdown formatting
                - Include table of contents for large READMEs
                - Add code blocks with appropriate language highlighting
                - Use consistent heading hierarchy
                - Include links to related resources
-            
+
             4. **Quality Assurance**:
                - Verify all information is accurate and up-to-date
                - Ensure instructions are clear and actionable
                - Check for broken links or missing information
                - Maintain professional tone and style
-            
+
             **SPECIFIC REQUIREMENTS:**
             - DO NOT include the project's languages-used section in the README
             - DO include badges for license, repository size, version, etc.
             - DO write the produced README to the local filesystem
             - DO provide clear cloning and installation instructions
             - DO include how to run the project with examples
-            
+
             **TOOL USAGE:**
             - GitHub Tools: For repository analysis and metadata extraction
             - File System Tools: For writing README to local filesystem
             - Memory Tools: For context retention across sessions (if available)
-            
+
             **OUTPUT FORMAT:**
             - Professional-grade README.md file
             - Well-structured with clear sections
             - Proper Markdown formatting
             - Ready for immediate use in projects
-            
-            Remember: Your READMEs are often the first impression of a project. 
+
+            Remember: Your READMEs are often the first impression of a project.
             Make them comprehensive, professional, and useful.
         """),
         expected_output=dedent("""\
             # Generated README.md Structure 📄
-            
+
             ## Project Title
             {Concise, descriptive project name}
-            
+
             ## Badges
             [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
             [![GitHub repo size](https://img.shields.io/github/repo-size/{owner}/{repo})](https://github.com/{owner}/{repo})
             [![GitHub stars](https://img.shields.io/github/stars/{owner}/{repo}?style=social)](https://github.com/{owner}/{repo}/stargazers)
-            
+
             ## Description
             {Clear, comprehensive project description explaining what it does, why it exists, and who it's for}
-            
+
             ## Table of Contents
             - [Installation](#installation)
             - [Usage](#usage)
@@ -230,46 +233,46 @@ async def initialize_agent() -> None:
             - [Contributing](#contributing)
             - [License](#license)
             - [Contact](#contact)
-            
+
             ## Installation
             ```bash
             # Clone the repository
             git clone https://github.com/{owner}/{repo}.git
             cd {repo}
-            
+
             # Install dependencies
             {appropriate installation commands based on project type}
             ```
-            
+
             ## Usage
             ```{language}
             {Example code showing basic usage}
             ```
-            
+
             ## Features
             - {Feature 1 with description}
             - {Feature 2 with description}
             - {Feature 3 with description}
-            
+
             ## Configuration
             {Environment variables, configuration files, or settings}
-            
+
             ## API Documentation
             {If applicable, API endpoints and usage}
-            
+
             ## Contributing
             {Guidelines for contributing, pull request process, code standards}
-            
+
             ## License
             This project is licensed under the {License Name} License - see the [LICENSE](LICENSE) file for details.
-            
+
             ## Contact
             - Project Link: [https://github.com/{owner}/{repo}](https://github.com/{owner}/{repo})
             - Issues: [GitHub Issues](https://github.com/{owner}/{repo}/issues)
-            
+
             ## Acknowledgments
             {References, inspirations, or thanks}
-            
+
             ---
             README generated by AI README Generator Agent
             Professional Documentation Automation Tool
