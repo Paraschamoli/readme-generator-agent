@@ -1,0 +1,149 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Dockerfile.agent'
+      - 'readme_generator_agent/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - '.version'
+      - '.github/workflows/build-and-push.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: para5
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Read version
+        id: version
+        run: |
+          echo "version=$(cat .version | tr -d '\n')" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.agent
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            para5/readme-generator-agent:latest
+            para5/readme-generator-agent:${{ steps.version.outputs.version }}
+            para5/readme-generator-agent:build-${{ github.run_number }}
+            para5/readme-generator-agent:${{ github.sha }}
+          cache-from: type=registry,ref=para5/readme-generator-agent:buildcache
+          cache-to: type=registry,ref=para5/readme-generator-agent:buildcache,mode=max
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+
+      - name: Prepare Bindu registration data
+        id: prepare_data
+        run: |
+          # Read agent config
+          AGENT_CONFIG=$(cat readme_generator_agent/agent_config.json)
+
+          # Read skill.yaml and convert to JSON
+          SKILL_PATH="readme_generator_agent/skills/readme-generator/skill.yaml"
+          if [ -f "$SKILL_PATH" ]; then
+            echo "Reading skill from: $SKILL_PATH"
+            SKILL_JSON=$(yq -o=json "$SKILL_PATH")
+          else
+            echo "Error: Skill file not found at $SKILL_PATH"
+            SKILL_JSON="{}"
+          fi
+
+          # Get version from .version file
+          VERSION=$(cat .version | tr -d '\n')
+
+          # Create the complete registration payload using jq for proper JSON construction
+          REGISTRATION_PAYLOAD=$(jq -n \
+            --argjson agent_config "$AGENT_CONFIG" \
+            --argjson skill "$SKILL_JSON" \
+            --arg version "$VERSION" \
+            --arg docker_image "para5/readme-generator-agent:latest" \
+            --arg docker_digest "${{ steps.docker_build.outputs.digest }}" \
+            --arg repo_url "https://github.com/${{ github.repository }}" \
+            --arg commit_sha "${{ github.sha }}" \
+            --arg build_number "${{ github.run_number }}" \
+            --arg last_updated "${{ github.event.head_commit.timestamp }}" \
+            '{
+              "agent": {
+                "name": $agent_config.name,
+                "author": $agent_config.author,
+                "description": $agent_config.description,
+                "version": $version,
+                "agent_trust": $agent_config.agent_trust,
+                "type": "documentation"
+              },
+              "skills": [$skill],
+              "framework": {
+                "name": "agno",
+                "version": "2.2.0"
+              },
+              "environment_variables": $agent_config.environment_variables,
+              "execution_cost": {},
+              "auth": {},
+              "deployment": {
+                "url": $agent_config.deployment.url,
+                "protocol_version": $agent_config.deployment.protocol_version,
+                "docker_image": $docker_image,
+                "docker_digest": $docker_digest,
+                "platforms": ["linux/amd64", "linux/arm64"]
+              },
+              "repository": {
+                "url": $repo_url,
+                "commit_sha": $commit_sha,
+                "build_number": $build_number
+              },
+              "metadata": {
+                "documentation_url": "https://Paraschamoli.github.io/readme-generator-agent/",
+                "domain": "developer-tools",
+                "specialization": "documentation-generation",
+                "last_updated": $last_updated
+              }
+            }')
+
+          # Save the payload to a file for debugging and for the next step
+          echo "$REGISTRATION_PAYLOAD" > registration_payload.json
+          echo "payload=$(echo "$REGISTRATION_PAYLOAD" | jq -c .)" >> $GITHUB_OUTPUT
+
+          echo "Generated registration payload:"
+          cat registration_payload.json | jq .
+
+      - name: Register with Bindu
+        run: |
+          echo "Sending registration to Bindu..."
+
+          curl --location 'https://bindus.getbindu.com/bindu-register' \
+            --header 'accept: application/json' \
+            --header 'X-Bindu-CI: true' \
+            --header "X-API-Token: ${{ secrets.BINDU_API_TOKEN }}" \
+            --header 'Content-Type: application/json' \
+            --data-binary @registration_payload.json
+
+          echo ""
+          echo "✅ Registration complete"

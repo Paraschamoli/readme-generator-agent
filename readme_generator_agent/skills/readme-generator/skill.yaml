@@ -1,0 +1,403 @@
+# README Generation and Documentation Skill
+# AI-powered documentation assistant for automatic README file creation
+
+# Basic Metadata
+id: readme-generator-v1
+name: readme-generator
+version: 1.0.0
+author: paras25619@gmail.com
+
+# Description
+description: |
+  An AI-powered documentation assistant that automatically creates clear, structured, and professional
+  README files for software projects. This skill analyzes codebases and project context to generate
+  comprehensive documentation including overview, installation instructions, usage examples, features,
+  and contribution guidelines—helping teams improve project clarity, onboarding, and maintainability.
+
+# Tags and Modes
+tags:
+  - documentation
+  - readme-generation
+  - github
+  - project-documentation
+  - automation
+  - developer-tools
+  - code-analysis
+  - markdown
+  - software-engineering
+  - technical-writing
+
+input_modes:
+  - text/plain
+  - application/json
+
+output_modes:
+  - text/plain
+  - application/json
+  - text/markdown
+
+# Example Queries
+examples:
+  - "Generate a README for https://github.com/agno-agi/agno"
+  - "Create documentation for my React project at github.com/username/react-app"
+  - "Write a professional README for a Python package repository"
+  - "Generate comprehensive documentation for a Node.js API project"
+  - "Create a README with badges and installation instructions for a Go library"
+
+# Detailed Capabilities
+capabilities_detail:
+  repository_analysis:
+    supported: true
+    analysis_types:
+      - codebase_structure
+      - language_detection
+      - dependency_analysis
+      - project_metadata
+      - license_identification
+    data_sources:
+      - github_repositories
+      - git_repositories
+      - local_projects
+    extraction_methods:
+      - api_integration
+      - file_parsing
+      - metadata_reading
+
+  readme_generation:
+    supported: true
+    sections_included:
+      - project_title_and_badges
+      - description_and_overview
+      - installation_instructions
+      - usage_examples
+      - configuration_guide
+      - api_documentation
+      - contribution_guidelines
+      - license_information
+      - contact_details
+    formatting_standards:
+      - markdown_compliance
+      - badge_integration
+      - code_block_highlighting
+      - table_of_contents
+      - consistent_styling
+
+  badge_generation:
+    supported: true
+    badge_types:
+      - license_badges
+      - version_badges
+      - size_badges
+      - star_badges
+      - build_status
+      - coverage_reports
+      - dependency_status
+    customization:
+      - shield_io_integration
+      - custom_badges
+      - color_schemes
+      - style_variations
+
+  quality_assurance:
+    supported: true
+    quality_checks:
+      - completeness_verification
+      - accuracy_validation
+      - link_validation
+      - formatting_consistency
+      - grammar_and_spelling
+      - clarity_assessment
+    standards_compliance:
+      - professional_tone
+      - technical_accuracy
+      - accessibility_standards
+      - seo_optimization
+
+# Requirements
+requirements:
+  packages:
+    - agno>=2.2.0
+    - bindu>=2026.1.12
+    - pygithub>=2.6.0
+    - openai>=1.60.0
+    - python-dotenv>=1.0.1
+    - mem0ai>=1.0.1
+  system: []
+  min_memory_mb: 512
+  external_services:
+    - GitHub API (via personal access token)
+    - OpenAI API or OpenRouter API
+    - Mem0 API (optional)
+    - Shields.io for badges
+
+# Performance Metrics
+performance:
+  avg_processing_time_ms: 8000
+  avg_repository_size_mb: 10
+  max_concurrent_requests: 4
+  memory_per_request_mb: 512
+  timeout_seconds: 180
+  max_file_analysis: 100
+  scalability: horizontal
+
+# Tool Restrictions
+allowed_tools:
+  - GithubTools
+  - LocalFileSystemTools
+  - Mem0Tools
+  - Analyze
+  - Generate
+  - Write
+  - Read
+  - Validate
+
+# Rich Documentation
+documentation:
+  overview: |
+    This skill specializes in automated README generation and project documentation. It combines
+    repository analysis with intelligent content generation to create professional, comprehensive
+    documentation that follows best practices and industry standards.
+
+    The assistant excels at understanding project structure, extracting key information, and
+    presenting it in a clear, organized format that helps developers onboard quickly and
+    understand project capabilities.
+
+  use_cases:
+    when_to_use:
+      - User needs professional README for a new or existing project
+      - User wants to automate documentation for multiple repositories
+      - User needs consistent documentation across team projects
+      - User wants to improve existing project documentation
+      - User needs badge integration and professional formatting
+      - User wants to ensure documentation follows best practices
+
+    when_not_to_use:
+      - Simple file editing or text manipulation (use text editor)
+      - Code generation or refactoring (use code assistant)
+      - Project management or issue tracking (use project management tools)
+      - Real-time collaboration (use collaborative editors)
+      - Legal document creation (use legal documentation tools)
+
+  input_structure: |
+    Accepts README generation requests with optional specifications:
+
+    {
+      "repository_url": "https://github.com/owner/repo",
+      "output_path": "./README.md",
+      "custom_sections": ["api", "deployment", "testing"],
+      "badge_style": "flat|flat-square|plastic|for-the-badge",
+      "include_languages": false,
+      "tone": "professional|casual|technical"
+    }
+
+    Alternative: Plain text input with repository URL or path
+
+    Constraints:
+    - Repository must be accessible (public or with proper permissions)
+    - Max repository size: 100MB (recommended)
+    - Timeout: 180 seconds
+    - Supported: GitHub repositories primarily
+
+  output_format: |
+    Generated README File:
+    ```markdown
+    # [Project Name]
+
+    [Badges Section]
+
+    ## Description
+    [Comprehensive project description]
+
+    ## Table of Contents
+    [Navigation links]
+
+    ## Installation
+    [Step-by-step installation guide]
+
+    ## Usage
+    [Examples and usage instructions]
+
+    ## Features
+    [Key features and capabilities]
+
+    ## API Documentation
+    [If applicable, API details]
+
+    ## Contributing
+    [Guidelines for contributors]
+
+    ## License
+    [License information]
+
+    ## Contact
+    [Project links and contact information]
+    ```
+
+    API Response:
+    {
+      "success": true,
+      "readme_content": "Full README markdown content",
+      "metadata": {
+        "repository": "owner/repo",
+        "sections_generated": 8,
+        "badges_added": 5,
+        "processing_time_ms": 7500,
+        "file_size_bytes": 4520,
+        "output_path": "./README.md"
+      },
+      "quality_metrics": {
+        "completeness_score": 0.92,
+        "clarity_score": 0.88,
+        "professionalism_score": 0.95
+      }
+    }
+
+  error_handling:
+    - "Repository not found: Provides clear error and suggestions"
+    - "Access denied: Explains permission requirements"
+    - "Large repository timeout: Returns partial results with explanation"
+    - "Invalid URL format: Asks for clarification with examples"
+    - "File system error: Provides troubleshooting steps"
+    - "API rate limits: Queues requests or suggests alternatives"
+
+  examples:
+    - title: "Agno Framework README"
+      input:
+        repository_url: "https://github.com/agno-agi/agno"
+        badge_style: "flat-square"
+        tone: "technical"
+      output:
+        success: true
+        readme_content: "# Agno Framework\n\n[Badges...]\n\n## Description\n\nAgno is a modern AI agent framework...",
+        metadata: {...}
+        quality_metrics: {...}
+
+    - title: "React Application Documentation"
+      input:
+        repository_url: "https://github.com/username/react-app"
+        custom_sections: ["deployment", "environment-variables", "testing"]
+        output_path: "./docs/README.md"
+      output:
+        success: true
+        readme_content: "# React Application\n\n[Badges...]\n\n## Description\n\nModern React application...",
+        metadata: {...}
+        quality_metrics: {...}
+
+    - title: "Python Package README"
+      input:
+        repository_url: "https://github.com/username/python-package"
+        tone: "professional"
+        include_languages: false
+      output:
+        success: true
+        readme_content: "# Python Package\n\n[Badges...]\n\n## Description\n\nPython utility package...",
+        metadata: {...}
+        quality_metrics: {...}
+
+  best_practices:
+    for_developers:
+      - "Always include GitHub access token for private repository access"
+      - "Specify output path to control where README is saved"
+      - "Use custom_sections to tailor documentation to project type"
+      - "Cache repository analysis to improve performance for repeated requests"
+      - "Implement progress indicators for large repository analysis"
+      - "Validate repository accessibility before full analysis"
+
+    for_orchestrators:
+      - "Route documentation and README generation requests to this skill"
+      - "Chain with code analysis agents for comprehensive project understanding"
+      - "Consider repository size for timeout and resource allocation"
+      - "Balance between thorough analysis and response time"
+      - "Use quality metrics for automated documentation review"
+      - "Implement fallback for basic README generation when GitHub API fails"
+      - "Monitor repository access patterns for optimization"
+
+  installation: |
+    Required packages:
+    pip install agno bindu pygithub openai python-dotenv mem0ai
+
+    Environment variables (at least one required):
+    OPENAI_API_KEY=your_openai_api_key
+    OPENROUTER_API_KEY=your_openrouter_api_key  # Alternative to OpenAI
+
+    Required for GitHub repository access:
+    GITHUB_ACCESS_TOKEN=your_github_personal_access_token
+
+    Optional environment variables:
+    MEM0_API_KEY=your_mem0_api_key  # For memory and context features
+
+    GitHub Token Setup:
+    1. Go to https://github.com/settings/tokens
+    2. Generate new token with "repo" scope (full control of private repositories)
+    3. For public repos only, use "public_repo" scope
+
+  versioning:
+    - version: "1.0.0"
+      date: "2026-01-13"
+      changes: "Initial release with core README generation capabilities"
+    - version: "1.1.0"
+      status: "planned"
+      changes: "Add multi-repository documentation and batch processing"
+    - version: "1.2.0"
+      status: "planned"
+      changes: "Enhanced code analysis and architecture documentation"
+
+# Assessment fields for skill negotiation
+assessment:
+  keywords:
+    - readme
+    - documentation
+    - generate
+    - create
+    - write
+    - markdown
+    - github
+    - repository
+    - project
+    - install
+    - usage
+    - guide
+    - manual
+    - badges
+    - contributing
+    - license
+    - api
+
+  specializations:
+    - domain: open_source_projects
+      confidence_boost: 0.4
+    - domain: web_development
+      confidence_boost: 0.3
+    - domain: data_science
+      confidence_boost: 0.3
+    - domain: devops_tools
+      confidence_boost: 0.2
+
+  anti_patterns:
+    - "code generation"
+    - "bug fixing"
+    - "project management"
+    - "real-time chat"
+    - "image processing"
+    - "audio/video editing"
+    - "data analysis"
+    - "mathematical calculations"
+
+  complexity_indicators:
+    simple:
+      - "basic readme"
+      - "simple documentation"
+      - "project description"
+      - "installation guide"
+    medium:
+      - "comprehensive readme"
+      - "multiple sections"
+      - "badge integration"
+      - "api documentation"
+    complex:
+      - "full project documentation"
+      - "multi-repository analysis"
+      - "custom badge generation"
+      - "quality assurance"
+      - "professional formatting"
+      - "contributing guidelines"
