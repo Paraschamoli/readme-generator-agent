@@ -120,7 +120,7 @@ jobs:
                 "build_number": $build_number
               },
               "metadata": {
-                "documentation_url": "https://Paraschamoli.github.io/readme-generator-agent/",
+                "documentation_url": "https://github.com/Paraschamoli/readme-generator-agent#readme",
                 "domain": "developer-tools",
                 "specialization": "documentation-generation",
                 "last_updated": $last_updated

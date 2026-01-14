@@ -35,7 +35,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://Paraschamoli.github.io/readme-generator-agent/"
 Repository = "https://github.com/Paraschamoli/readme-generator-agent"
-Documentation = "https://Paraschamoli.github.io/readme-generator-agent/"
+Documentation = "https://github.com/Paraschamoli/readme-generator-agent#readme"
 "Bug Tracker" = "https://github.com/Paraschamoli/readme-generator-agent/issues"
 "Changelog" = "https://github.com/Paraschamoli/readme-generator-agent/releases"
 

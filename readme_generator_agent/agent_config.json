@@ -31,14 +31,9 @@
   "num_history_sessions": 5,
   "environment_variables": [
     {
-      "key": "OPENAI_API_KEY",
-      "description": "OpenAI API key for LLM calls",
-      "required": true
-    },
-    {
       "key": "OPENROUTER_API_KEY",
       "description": "OpenRouter API key for LLM calls",
-      "required": false
+      "required": true
     },
     {
       "key": "GITHUB_ACCESS_TOKEN",
@@ -48,7 +43,7 @@
     {
       "key": "MEM0_API_KEY",
       "description": "Mem0 API key for memory operations",
-      "required": false
+      "required": true
     }
   ]
 }
