@@ -7,9 +7,8 @@ readme = "README.md"
 keywords = ['python', 'ai', 'documentation', 'readme', 'github', 'automation', 'developer-tools']
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "bindu==2026.1.12",
+     "bindu>=2026.8.5",
     "agno>=2.2.0",
-    "fastmcp>=2.11.0",
     "requests>=2.31.0",
     "rich>=13.0.0",
     "openai>=1.60.0",
